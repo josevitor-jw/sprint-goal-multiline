@@ -1,6 +1,6 @@
 {
   "name": "Handle Text",
-  "version": "1.0",
+  "version": "1.0.1",
   "manifest_version": 3,
   "description": "Formatting style based on the current state",
   "action": {
