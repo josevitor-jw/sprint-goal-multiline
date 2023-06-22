@@ -1,3 +1,6 @@
+// Control and accept only one click
+var alreadyClicked = false;
+
 /*
   Function allows toggling between single-line and multi-line text display for the specified element, providing a convenient way to modify the formatting style based on the current state.
 */
@@ -16,12 +19,10 @@ function formatStyle() {
   return { styleApplied: newWhiteSpace === 'pre-line' };
 }
 
-
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-  if (message.toggleStyle) {
+  if (message.toggleStyle && !alreadyClicked) {
+    alreadyClicked = true;
     const response = formatStyle();
     sendResponse(response);
   }
 });
-
-  
