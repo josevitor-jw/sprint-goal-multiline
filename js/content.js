@@ -1,28 +1,60 @@
 // Control and accept only one click
 var alreadyClicked = false;
 
-/*
-  Function allows toggling between single-line and multi-line text display for the specified element, providing a convenient way to modify the formatting style based on the current state.
-*/
-function formatStyle() {
-  var sprintGoalElement = document.querySelector('.ghx-sprint-goal');
-
-  if (!sprintGoalElement) {
+function formatStyle(textElement) {
+  if (!textElement) {
     return { styleApplied: false };
   }
 
-  var currentWhiteSpace = sprintGoalElement.style.whiteSpace;
+  var currentWhiteSpace = textElement.parentElement.style.whiteSpace;
   var newWhiteSpace = currentWhiteSpace === 'pre-line' ? 'normal' : 'pre-line';
 
-  sprintGoalElement.style.whiteSpace = newWhiteSpace;
+  textElement.parentElement.style.whiteSpace = newWhiteSpace;
 
   return { styleApplied: newWhiteSpace === 'pre-line' };
 }
 
+function findTextElementStartingWithOne() {
+  // find the text element starting with 1.
+  var textNodes = document.createTreeWalker(
+    document.body,
+    NodeFilter.SHOW_TEXT,
+    null,
+    false
+  );
+
+  var foundTextElement = null;
+
+  while (textNodes.nextNode()) {
+    var textContent = textNodes.currentNode.textContent;
+
+    if (textContent.trim().startsWith('1.')) {
+      foundTextElement = textNodes.currentNode;
+      break;
+    }
+  }
+
+  return foundTextElement;
+}
+
+function handleClick() {
+  if (alreadyClicked) {
+    return;
+  }
+
+  alreadyClicked = true;
+  const textElement = findTextElementStartingWithOne();
+  const response = formatStyle(textElement);
+
+  if (response.styleApplied) {
+    console.log('Style applied.');
+  } else {
+    console.log('Element not found or style not applied.');
+  }
+}
+
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-  if (message.toggleStyle && !alreadyClicked) {
-    alreadyClicked = true;
-    const response = formatStyle();
-    sendResponse(response);
+  if (message.toggleStyle) {
+    handleClick();
   }
 });
