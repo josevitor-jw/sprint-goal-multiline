@@ -7,11 +7,11 @@ function formatStyle(textElement) {
   }
 
   var currentWhiteSpace = textElement.parentElement.style.whiteSpace;
-  var newWhiteSpace = currentWhiteSpace === 'pre-line' ? 'normal' : 'pre-line';
+  var newWhiteSpace = currentWhiteSpace === "pre-line" ? "normal" : "pre-line";
 
   textElement.parentElement.style.whiteSpace = newWhiteSpace;
 
-  return { styleApplied: newWhiteSpace === 'pre-line' };
+  return { styleApplied: newWhiteSpace === "pre-line" };
 }
 
 function findTextElementStartingWithOne() {
@@ -28,7 +28,8 @@ function findTextElementStartingWithOne() {
   while (textNodes.nextNode()) {
     var textContent = textNodes.currentNode.textContent;
 
-    if (textContent.trim().startsWith('1.')) {
+    // check if the text starts with 1. or 1)
+    if (/^1[.)]/.test(textContent.trim())) {
       foundTextElement = textNodes.currentNode;
       break;
     }
@@ -47,9 +48,9 @@ function handleClick() {
   const response = formatStyle(textElement);
 
   if (response.styleApplied) {
-    console.log('Style applied.');
+    console.log("Style applied.");
   } else {
-    console.log('Element not found or style not applied.');
+    console.log("Element not found or style not applied.");
   }
 }
 
